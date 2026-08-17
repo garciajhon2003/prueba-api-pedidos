@@ -8,7 +8,7 @@
 
 <body>
     <h1>Crear Nuevo Pedido</h1>
-    <a href="{{ route('products.index') }}">⬅️ Volver al listado de productos</a>
+    <a href="{{ route('api.products.index') }}">⬅️ Volver al listado de productos</a>
     <br><br>
 
     @if ($errors->any())
@@ -19,7 +19,7 @@
         </ul>
     @endif
 
-    <form action="{{ route('orders.store') }}" method="POST">
+    <form action="{{ route('api.orders.store') }}" method="POST">
         @csrf
         <h3>Selecciona los productos y las cantidades:</h3>
         <table border="1">

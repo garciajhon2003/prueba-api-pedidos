@@ -14,3 +14,11 @@ test('authenticated users can visit the dashboard', function () {
     $response = $this->get(route('dashboard'));
     $response->assertOk();
 });
+
+test('authenticated users can access the products and orders routes in the sidebar', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $this->get(route('api.products.index'))->assertOk();
+    $this->get(route('api.orders.index'))->assertOk();
+});

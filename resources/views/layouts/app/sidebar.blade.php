@@ -19,12 +19,12 @@
                     wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="home" :href="route('products.index')"
-                    :current="request()->routeIs('products.*')" wire:navigate>
+                <flux:sidebar.item icon="home" :href="route('api.products.index')"
+                    :current="request()->routeIs('api.products.*')" wire:navigate>
                     Productos
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="home" :href="route('orders.index')"
-                    :current="request()->routeIs('orders.*')" wire:navigate>
+                <flux:sidebar.item icon="home" :href="route('api.orders.index')"
+                    :current="request()->routeIs('api.orders.*')" wire:navigate>
                     Pedidos
                 </flux:sidebar.item>
 

@@ -1,12 +1,12 @@
 <x-layouts::app>
     <div class="flex justify-between items-center mb-4">
         <flux:breadcrumbs class="mb-4">
-            <flux:breadcrumbs.item href="{{ route('products.index') }}">
+            <flux:breadcrumbs.item href="{{ route('api.products.index') }}">
                 Productos
             </flux:breadcrumbs.item>
         </flux:breadcrumbs>
 
-        <a class="btn btn-blue text-xs" href="{{ route('products.create') }}">
+        <a class="btn btn-blue text-xs" href="{{ route('api.products.create') }}">
             Nuevo producto
         </a>
     </div>

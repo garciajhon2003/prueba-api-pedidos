@@ -14,7 +14,7 @@ class ProductController extends Controller
     {
         $products = Product::latest()->paginate(10);
 
-        return view('products.index', compact('products'));
+        return view('components.api.products.index', compact('products'));
     }
 
     /**
@@ -22,7 +22,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        return view('components.api.products.create');
     }
 
     /**
@@ -40,6 +40,6 @@ class ProductController extends Controller
             'price' => $request->price,
         ]);
 
-        return redirect()->route('products.index');
+        return redirect()->route('api.products.index');
     }
 }

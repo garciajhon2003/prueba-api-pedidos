@@ -1,7 +1,7 @@
 <x-layouts::app>
     <div class="mb-6">
         <flux:breadcrumbs class="mb-4">
-            <flux:breadcrumbs.item href="{{ route('orders.index') }}">Pedidos</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item href="{{ route('api.orders.index') }}">Pedidos</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Detalle del Pedido #{{ $order->id }}</flux:breadcrumbs.item>
         </flux:breadcrumbs>
     </div>

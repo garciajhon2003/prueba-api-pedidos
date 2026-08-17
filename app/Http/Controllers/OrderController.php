@@ -18,14 +18,14 @@ class OrderController extends Controller
         // Cargamos las relaciones necesarias
         $order->load(['user', 'products']);
 
-        return view('orders.show', compact('order'));
+        return view('components.api.orders.show', compact('order'));
     }
 
     public function index()
     {
         $users = User::all();
         $orders = Order::latest()->paginate(10);
-        return view('orders.index', compact('orders', 'users'));
+        return view('components.api.orders.index', compact('orders', 'users'));
     }
 
     public function create()
@@ -33,7 +33,7 @@ class OrderController extends Controller
         $orders = Order::all();
         $products = Product::all();
         $users = User::all();
-        return view('orders.create', compact('orders', 'products', 'users'));
+        return view('components.api.orders.create', compact('orders', 'products', 'users'));
     }
 
     /**
@@ -87,7 +87,7 @@ class OrderController extends Controller
             // Actualizamos el total del pedido
             $order->update(['total' => $total]);
 
-            return redirect()->route('orders.index')
+            return redirect()->route('api.orders.index')
                 ->with('success', 'Pedido creado exitosamente');
         });
     }

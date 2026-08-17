@@ -1,12 +1,12 @@
 <x-layouts::app>
     <div class="flex justify-between items-center mb-4">
         <flux:breadcrumbs class="mb-4">
-            <flux:breadcrumbs.item href="{{ route('orders.index') }}">
+            <flux:breadcrumbs.item href="{{ route('api.orders.index') }}">
                 Pedido
             </flux:breadcrumbs.item>
         </flux:breadcrumbs>
 
-        <a class="btn btn-blue text-xs" href="{{ route('orders.create') }}">
+        <a class="btn btn-blue text-xs" href="{{ route('api.orders.create') }}">
             Nuevo producto
         </a>
     </div>
@@ -42,7 +42,7 @@
                             ${{ number_format($order->total, 2) }}
                         </td>
                         <td class="px-6 py-4"> <!-- Enlace a los detalles -->
-                            <a href="{{ route('orders.show', $order->id) }}"
+                            <a href="{{ route('api.orders.show', $order->id) }}"
                                 class="text-blue-600 hover:underline font-medium">
                                 Ver Detalles
                             </a>

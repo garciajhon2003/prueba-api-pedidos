@@ -27,6 +27,10 @@ Content-Type: application/json
     {
       "product_id": 1,
       "quantity": 2
+    },
+      {
+      "product_id": 2,
+      "quantity": 3
     }
   ]
 }
@@ -34,5 +38,5 @@ Content-Type: application/json
 ###
 
 ### 4️⃣ Obtener un Pedido por ID (GET)
-GET http://127.0.0.1:8000/api/orders/10
+GET http://127.0.0.1:8000/api/orders/11
 Accept: application/json

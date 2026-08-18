@@ -28,7 +28,6 @@ class OrderController extends Controller
                 $subtotal = $product->price * $item['quantity'];
                 $total += $subtotal;
 
-                // Inyectamos 'price' y 'subtotal' porque tu tabla los exige
                 $pivotData[$item['product_id']] = [
                     'quantity' => $item['quantity'],
                     'price' => $product->price,

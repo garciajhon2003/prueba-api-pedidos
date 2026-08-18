@@ -8,7 +8,7 @@
 
 <body>
     <h1>Crear Nuevo Producto</h1>
-    <a href="{{ route('api.products.index') }}">⬅️ Volver al listado</a>
+    <a href="{{ route('products.index') }}">⬅️ Volver al listado</a>
     <br><br>
 
     @if ($errors->any())
@@ -19,7 +19,7 @@
         </ul>
     @endif
 
-    <form action="{{ route('api.products.store') }}" method="POST">
+    <form action="{{ route('products.store') }}" method="POST">
         @csrf
         <label>Nombre del Producto:</label><br>
         <input type="text" name="name" value="{{ old('name') }}"><br><br>

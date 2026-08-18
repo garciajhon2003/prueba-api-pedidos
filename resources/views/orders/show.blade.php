@@ -1,7 +1,8 @@
 <x-layouts::app>
     <div class="mb-6">
         <flux:breadcrumbs class="mb-4">
-            <flux:breadcrumbs.item href="{{ route('api.orders.index') }}">Pedidos</flux:breadcrumbs.item>
+            <!-- 1️⃣ Corregido: Enlace de regreso al flujo Web -->
+            <flux:breadcrumbs.item href="{{ route('orders.index') }}">Pedidos</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Detalle del Pedido #{{ $order->id }}</flux:breadcrumbs.item>
         </flux:breadcrumbs>
     </div>
@@ -23,8 +24,8 @@
                 <tr>
                     <th scope="col" class="px-6 py-3 font-medium">Producto</th>
                     <th scope="col" class="px-6 py-3 font-medium text-center">Cantidad</th>
-                    <th scope="col" class="px-6 py-3 font-right">Precio Unitario</th>
-                    <th scope="col" class="px-6 py-3 font-right">Subtotal</th>
+                    <th scope="col" class="px-6 py-3 text-right">Precio Unitario</th>
+                    <th scope="col" class="px-6 py-3 text-right">Subtotal</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,11 +37,13 @@
                         <td class="px-6 py-4 text-center">
                             {{ $product->pivot->quantity }}
                         </td>
-                        <td class="px-6 py-4">
-                            ${{ number_format($product->pivot->price, 2) }}
+                        <!-- 2️⃣ Corregido: Se lee el precio del modelo Product, no de la tabla pivote -->
+                        <td class="px-6 py-4 text-right">
+                            ${{ number_format($product->price, 2) }}
                         </td>
-                        <td class="px-6 py-4 font-semibold">
-                            ${{ number_format($product->pivot->subtotal, 2) }}
+                        <!-- 3️⃣ Corregido: El subtotal se calcula dinámicamente en el momento -->
+                        <td class="px-6 py-4 text-right font-semibold">
+                            ${{ number_format($product->price * $product->pivot->quantity, 2) }}
                         </td>
                     </tr>
                 @endforeach

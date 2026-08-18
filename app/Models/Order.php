@@ -27,12 +27,13 @@ class Order extends Model
     }
 
     // Un pedido tiene muchos productos
-    public function products(): BelongsToMany
+    public function products()
     {
         return $this->belongsToMany(Product::class, 'order_product')
-            ->withPivot('quantity', 'price', 'subtotal')
+            ->withPivot('quantity', 'price', 'subtotal') // <-- Asegúrate de que tenga los tres
             ->withTimestamps();
     }
+
 
     /**
      * Calcula automáticamente el total del pedido basado en sus productos y cantidades.

@@ -1,15 +1,17 @@
 <?php
 
-use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
-use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('components.api.dashboard');
-})->middleware('auth')->name('api.dashboard');
+// 1️⃣ Crear un producto
+Route::post('/products', [ProductController::class, 'store']);
 
+// 2️⃣ Listar productos
+Route::get('/products', [ProductController::class, 'index']);
 
-Route::resource('users', UserController::class);
-Route::resource('products', ProductController::class);
-Route::resource('orders', OrderController::class);
+// 3️⃣ Crear un pedido
+Route::post('/orders', [OrderController::class, 'store']);
+
+// 4️⃣ Obtener los productos de un pedido
+Route::get('/orders/{id}', [OrderController::class, 'show']);

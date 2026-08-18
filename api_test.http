@@ -1,0 +1,38 @@
+### 1️⃣ Crear un Producto (POST)
+POST http://127.0.0.1:8000/api/products
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Teclado Mecanico Gamer",
+  "price": 89.99
+}
+
+###
+
+### 2️⃣ Listar todos los Productos (GET)
+GET http://127.0.0.1:8000/api/products
+Accept: application/json
+
+###
+
+### 3️⃣ Crear un Pedido (POST)
+POST http://127.0.0.1:8000/api/orders
+Accept: application/json
+Content-Type: application/json
+
+{
+  "user_id": 2,
+  "products": [
+    {
+      "product_id": 1,
+      "quantity": 2
+    }
+  ]
+}
+
+###
+
+### 4️⃣ Obtener un Pedido por ID (GET)
+GET http://127.0.0.1:8000/api/orders/10
+Accept: application/json

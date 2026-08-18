@@ -7,39 +7,26 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $products = Product::latest()->paginate(10);
-
-        return view('components.api.products.index', compact('products'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('components.api.products.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // POST /api/products -> Crea el producto y devuelve JSON con código 201
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'numeric', 'gt:0'],
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0.01',
         ]);
 
-        Product::create([
-            'name' => $request->name,
-            'price' => $request->price,
-        ]);
+        $product = Product::create($validated);
 
-        return redirect()->route('api.products.index');
+        // ESTO ES LO QUE TE PIDE: Devolver JSON y código 201. Nada de views ni redirects.
+        return response()->json($product, 201);
+    }
+
+    // GET /api/products -> Debe devolver el listado de productos en JSON con código 200
+    public function index()
+    {
+        $products = Product::select('id', 'name', 'price')->get();
+
+        // Devolvemos la lista limpia en formato JSON
+        return response()->json($products, 200);
     }
 }

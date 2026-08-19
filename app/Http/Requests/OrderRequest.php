@@ -11,26 +11,23 @@ class OrderRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('products')) {
-            $filteredProducts = array_filter($this->input('products'), function ($item) {
-                return isset($item['quantity']) && (int)$item['quantity'] > 0;
-            });
-
-            $this->merge([
-                'products' => array_values($filteredProducts)
-            ]);
-        }
-    }
-
     public function rules(): array
     {
         return [
             'user_id' => 'required|exists:users,id',
             'products' => 'required|array|min:1',
-            'products.*.product_id' => 'required|exists:products,id|distinct',
             'products.*.quantity' => 'required|integer|min:1',
+            'products.*.product_id' => 'exclude_if:products.*.quantity,0|required|exists:products,id|distinct',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'user_id.exists' => 'El usuario seleccionado no existe en el sistema.',
+            'products.*.product_id.exists' => 'El producto seleccionado no existe en nuestro catálogo.',
+            'products.*.product_id.distinct' => 'Este producto ya fue incluido en el pedido.',
+            'products.*.quantity.min' => 'La cantidad debe ser como mínimo 1.',
         ];
     }
 }

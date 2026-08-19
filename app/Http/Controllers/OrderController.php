@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
-use App\Http\Requests\OrderRequest; // 1. Importamos tu FormRequest
-use App\Http\Resources\OrderResource; // 2. Importamos el Resource (lo crearemos abajo)
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    // Cambiamos Request por tu nuevo OrderRequest (Validación y filtro automáticos)
     public function store(OrderRequest $request)
     {
-        return DB::transaction(function () use ($request) {
-            $productIds = collect($request->products)->pluck('product_id')->toArray();
-            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $validatedData = $request->validated();
 
+        $order = DB::transaction(function () use ($validatedData, $request) {
             $total = 0;
             $pivotData = [];
 
-            foreach ($request->products as $item) {
-                $product = $products->get($item['product_id']);
+            foreach ($validatedData['products'] as $item) {
+                if ((int) $item['quantity'] <= 0) {
+                    continue;
+                }
+
+                $product = Product::where('id', $item['product_id'])->lockForUpdate()->firstOrFail();
 
                 $subtotal = $product->price * $item['quantity'];
                 $total += $subtotal;
@@ -29,7 +31,7 @@ class OrderController extends Controller
                 $pivotData[$item['product_id']] = [
                     'quantity' => $item['quantity'],
                     'price' => $product->price,
-                    'subtotal' => $subtotal
+                    'subtotal' => $subtotal,
                 ];
             }
 
@@ -40,9 +42,12 @@ class OrderController extends Controller
 
             $order->products()->attach($pivotData);
 
-            // 3. Devolvemos la respuesta usando el Resource
-            return new OrderResource($order->load(['user', 'products']), 201);
+            return $order->load(['user', 'products']);
         });
+
+        return (new OrderResource($order))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function show($id)

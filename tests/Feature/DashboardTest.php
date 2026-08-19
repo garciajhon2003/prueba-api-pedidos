@@ -19,6 +19,6 @@ test('authenticated users can access the products and orders routes in the sideb
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    $this->get(route('api.products.index'))->assertOk();
-    $this->get(route('api.orders.index'))->assertOk();
+    $this->get(route('products.index'))->assertOk();
+    $this->get(route('orders.index'))->assertOk();
 });

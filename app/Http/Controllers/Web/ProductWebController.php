@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Http\Requests\ProductRequest;
 
 class ProductWebController extends Controller
 {
@@ -22,15 +22,12 @@ class ProductWebController extends Controller
     }
 
     // Procesa el formulario y redirecciona de vuelta al index
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0.01',
-        ]);
+        // Si el código llega aquí, los datos ya pasaron la validación con éxito
+        Product::create($request->validated());
 
-        Product::create($validated);
-
-        return redirect()->route('products.index')->with('success', 'Producto creado con éxito.');
+        return redirect()->route('products.index')
+            ->with('success', 'Producto creado con éxito.');
     }
 }

@@ -39,11 +39,11 @@
                         </td>
                         <!-- 2️⃣ Corregido: Se lee el precio del modelo Product, no de la tabla pivote -->
                         <td class="px-6 py-4 text-right">
-                            ${{ number_format($product->price, 2) }}
+                            ${{ number_format($product->pivot->price, 2) }}
                         </td>
                         <!-- 3️⃣ Corregido: El subtotal se calcula dinámicamente en el momento -->
                         <td class="px-6 py-4 text-right font-semibold">
-                            ${{ number_format($product->price * $product->pivot->quantity, 2) }}
+                            ${{ number_format($product->pivot->subtotal, 2) }}
                         </td>
                     </tr>
                 @endforeach

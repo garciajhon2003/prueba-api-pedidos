@@ -4,27 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Http\Requests\OrderRequest; // 1. Importamos tu FormRequest
+use App\Http\Resources\OrderResource; // 2. Importamos el Resource (lo crearemos abajo)
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    // POST /api/orders -> Crea el pedido, calcula el total y devuelve JSON
-    public function store(Request $request)
+    // Cambiamos Request por tu nuevo OrderRequest (Validación y filtro automáticos)
+    public function store(OrderRequest $request)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'products' => 'required|array|min:1',
-            'products.*.product_id' => 'required|exists:products,id|distinct',
-            'products.*.quantity' => 'required|integer|min:1',
-        ]);
+        return DB::transaction(function () use ($request) {
+            $productIds = collect($request->products)->pluck('product_id')->toArray();
+            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
             $total = 0;
             $pivotData = [];
 
             foreach ($request->products as $item) {
-                $product = \App\Models\Product::findOrFail($item['product_id']);
+                $product = $products->get($item['product_id']);
+
                 $subtotal = $product->price * $item['quantity'];
                 $total += $subtotal;
 
@@ -35,38 +33,24 @@ class OrderController extends Controller
                 ];
             }
 
-            // Crear el pedido con el total calculado
-            $order = \App\Models\Order::create([
+            $order = Order::create([
                 'user_id' => $request->user_id,
                 'total' => $total,
             ]);
 
-            // Guardar en la tabla pivote order_product incluyendo los campos extras
             $order->products()->attach($pivotData);
 
-            return response()->json($order->load('products'), 201);
+            // 3. Devolvemos la respuesta usando el Resource
+            return new OrderResource($order->load(['user', 'products']), 201);
         });
     }
 
     public function show($id)
     {
-        // Buscamos el pedido con su usuario y sus productos relacionados
-        $order = \App\Models\Order::with(['user', 'products'])->findOrFail($id);
+        // El manejo de errores de "no encontrado" ahora lo maneja Laravel devolviendo un JSON limpio si usas FindOrFail
+        $order = Order::with(['user', 'products'])->findOrFail($id);
 
-        // Retornamos el JSON con la estructura exacta que pide la prueba
-        return response()->json([
-            'id' => $order->id,
-            'user' => $order->user,
-            'total' => $order->total,
-            'products' => $order->products->map(function ($product) {
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'price' => $product->price,
-                    'quantity' => $product->pivot->quantity,
-                    'subtotal' => $product->pivot->subtotal
-                ];
-            })
-        ], 200);
+        // 3. Devolvemos el recurso en lugar de armar el array manual
+        return new OrderResource($order);
     }
 }

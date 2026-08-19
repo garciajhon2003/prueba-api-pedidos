@@ -4,7 +4,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "Teclado Mecanico Gamer",
+  "name": "Teclado Mecani Gamer",
   "price": 89.99
 }
 
@@ -25,11 +25,11 @@ Content-Type: application/json
   "user_id": 2,
   "products": [
     {
-      "product_id": 1,
+      "product_id": 45,
       "quantity": 2
     },
       {
-      "product_id": 2,
+      "product_id": 5,
       "quantity": 3
     }
   ]

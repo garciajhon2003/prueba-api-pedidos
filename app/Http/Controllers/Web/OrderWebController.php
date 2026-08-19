@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\OrderRequest;
 
 class OrderWebController extends Controller
 {
@@ -28,33 +29,24 @@ class OrderWebController extends Controller
     }
 
     // Recibe el formulario, calcula totales en backend y guarda
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
-        if ($request->has('products')) {
-            $filteredProducts = array_filter($request->input('products'), function ($item) {
-                // Solo dejamos pasar los productos cuya cantidad ingresada sea mayor a 0
-                return isset($item['quantity']) && (int)$item['quantity'] > 0;
-            });
-
-            // Sobreescribimos el input 'products' con el nuevo arreglo limpio
-            $request->merge(['products' => array_values($filteredProducts)]);
-        }
-
-
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'products' => 'required|array|min:1', // Exige que al menos el usuario compre 1 producto en total
-            'products.*.product_id' => 'required|exists:products,id|distinct',
-            'products.*.quantity' => 'required|integer|min:1', // Cada uno de los que sí se van a comprar debe ser >= 1
-        ]);
-
+        // Si el código llega aquí, los datos YA están filtrados y validados correctamente.
         try {
             $order = DB::transaction(function () use ($request) {
                 $total = 0;
                 $pivotData = [];
 
+                $productIds = collect($request->products)->pluck('product_id')->toArray();
+                $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
                 foreach ($request->products as $item) {
-                    $product = Product::findOrFail($item['product_id']);
+                    $product = $products->get($item['product_id']);
+
+                    if (!$product) {
+                        throw new \Exception("El producto con ID {$item['product_id']} no está disponible.");
+                    }
+
                     $subtotal = $product->price * $item['quantity'];
                     $total += $subtotal;
 
@@ -88,7 +80,9 @@ class OrderWebController extends Controller
     // Muestra la pantalla de detalles de un pedido específico
     public function show($id)
     {
+        // Buscamos un único pedido con sus relaciones
         $order = Order::with(['user', 'products'])->findOrFail($id);
+
         return view('orders.show', compact('order'));
     }
 }

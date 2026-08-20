@@ -24,6 +24,9 @@
                     <th scope="col" class="px-6 py-3 font-medium">
                         Precio
                     </th>
+                    <th>
+                        Stock
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +40,9 @@
                         </td>
                         <td class="px-6 py-4">
                             ${{ number_format($product->price, 2) }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $product->stock }}
                         </td>
                     </tr>
                 @empty

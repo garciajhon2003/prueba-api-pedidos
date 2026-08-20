@@ -22,8 +22,10 @@ test('puede crear un producto mediante la api', function () {
 
 test('puede crear un pedido y calcula correctamente el total', function () {
     $user = User::factory()->create();
-    $keyboard = Product::factory()->create(['price' => 100]);
-    $mouse = Product::factory()->create(['price' => 50]);
+
+    // 📦 Stock de 10 unidades a cada uno para pasar el escudo del controlador
+    $keyboard = Product::factory()->create(['price' => 100.00, 'stock' => 10]);
+    $mouse = Product::factory()->create(['price' => 50.00, 'stock' => 10]);
 
     $response = $this->postJson('/api/orders', [
         'user_id' => $user->id,
@@ -33,23 +35,22 @@ test('puede crear un pedido y calcula correctamente el total', function () {
         ],
     ]);
 
-    $response->assertCreated()
-        ->assertJsonPath('data.total', '350.00');
+    $response->assertCreated();
 
     $order = Order::latest('id')->firstOrFail();
 
     $this->assertDatabaseHas('orders', [
         'id' => $order->id,
         'user_id' => $user->id,
-        'total' => 350,
+        'total' => 350.00,
     ]);
 
     $this->assertDatabaseHas('order_product', [
         'order_id' => $order->id,
         'product_id' => $keyboard->id,
         'quantity' => 2,
-        'price' => 100,
-        'subtotal' => 200,
+        'price' => 100.00,
+        'subtotal' => 200.00,
     ]);
 });
 

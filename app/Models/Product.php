@@ -13,6 +13,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'price',
+        'stock',
     ];
 
     // Mutador opcional para asegurar que el precio se guarde como flotante/decimal

@@ -27,6 +27,10 @@
         <label>Precio (Decimal mayor a 0):</label><br>
         <input type="number" step="0.01" name="price" value="{{ old('price') }}"><br><br>
 
+        <label>Stock / Inventario Inicial (Número entero):</label><br>
+        <input type="number" name="stock" value="{{ old('stock', 0) }}" min="0"><br><br>
+        <!-- ----------------------------------------------------- -->
+
         <button type="submit">Guardar Producto</button>
     </form>
 </body>
